@@ -1,1 +1,1 @@
-use serde_json;
+pub mod serde_json;
