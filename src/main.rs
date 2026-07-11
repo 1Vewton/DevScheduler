@@ -1,5 +1,5 @@
-#[path="data_structure/projects.rs"]
-mod projects;
+mod data_structure;
+mod utils;
 
 fn main() {
     println!("Hello, world!");
