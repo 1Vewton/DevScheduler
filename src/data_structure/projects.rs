@@ -1,5 +1,6 @@
 // projects module
 mod projects{
+    #[derive(Clone)]
     // Project stores the data structure describing a project
     pub struct Project {
         project_name: String,
@@ -32,15 +33,21 @@ mod projects{
         }
     }
 
+    impl Project {
+        pub fn get_project_name(&self) -> String {
+            return self.project_name.clone();
+        }
+    }
+
     // Projects stores the data structure describing list of projects
     pub struct Projects {
-        list_of_projects: Vec<Project>
+        list_of_projects: Vec<Project>,
     }
 
     // NewProjects creates a project list
     pub fn new_projects() -> Projects {
         return Projects{
-            list_of_projects: Vec::new()
+            list_of_projects: Vec::new(),
         }
     }
 
@@ -74,6 +81,10 @@ mod projects{
                 }
             }
             return;
+        }
+        // get_all_projects get the list of projects
+        pub fn get_all_projects(&self) -> Vec<Project> {
+            return self.list_of_projects.clone();
         }
     }
 }
@@ -109,5 +120,27 @@ mod test {
             panic!("The calculation of the weights failed due to the total weight not equals to 1.0!")
         }
         return;
+    }
+    #[test]
+    // Test the deletion of project
+    fn test_delete_project_by_name(){
+        let project1: projects::Project = projects::create_project(
+            String::from("1"),
+            2,
+        );
+        let project2: projects::Project = projects::create_project_with_description(
+            String::from("abc"),
+            3,
+            String::from("aaa"),
+        );
+        let mut project_list: projects::Projects = projects::new_projects();
+        project_list.new_project(project1);
+        project_list.new_project(project2);
+        project_list.delete_project_by_name(String::from("abc"));
+        for project in project_list.get_all_projects(){
+            if project.get_project_name() == String::from("abc"){
+                panic!("The project didn't successfully deleted");
+            }
+        }
     }
 }
