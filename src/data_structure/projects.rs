@@ -1,5 +1,5 @@
 // projects module
-mod projects {
+pub mod projects {
     use crate::utils::rand_tools::random_tools;
 
     #[derive(Clone)]
@@ -100,7 +100,16 @@ mod projects {
         pub fn get_all_projects(&self) -> Vec<Project> {
             self.list_of_projects.clone()
         }
+
         // get_random_result get a random project from the projects
+        pub fn get_random_result(&self) -> Option<Project> {
+            let chosen_idx: usize = self.table.sample() as usize;
+            if chosen_idx >= self.list_of_projects.len(){
+                None
+            }else{
+                Some(self.list_of_projects[chosen_idx].clone())
+            }
+        }
     }
 }
 
@@ -151,6 +160,22 @@ mod test {
         }
         if project_list.get_all_projects().len() != 1 {
             panic!("Wrong project may be deleted");
+        }
+    }
+
+    #[test]
+    // Test get_random_result
+    fn test_random_result() {
+        let project1: projects::Project = projects::create_project(String::from("1"), 2);
+        let project2: projects::Project =
+            projects::create_project_with_description(String::from("abc"), 3, String::from("aaa"));
+        let mut project_list: projects::Projects = projects::new_projects();
+        project_list.new_project(project1);
+        project_list.new_project(project2);
+        if let Some(result) = project_list.get_random_result() {
+
+        }else{
+            panic!("The calculation of the results failed!");
         }
     }
 }
