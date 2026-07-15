@@ -68,12 +68,14 @@ mod projects {
         }
 
         // new_project adds new project to the Projects
+        // Update table
         pub fn new_project(&mut self, project: Project) {
             &self.list_of_projects.push(project);
             return;
         }
 
         // delete_project_by_name deletes certain project by name
+        // Update table
         pub fn delete_project_by_name(&mut self, project_name: String) {
             for (idx, project) in self.list_of_projects.iter().enumerate() {
                 if project.project_name == project_name {
