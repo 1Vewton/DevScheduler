@@ -1,13 +1,13 @@
 // random_tools contain tools for random generation related
-mod random_tools {
-    use std::collections::VecDeque;
+pub mod random_tools {
     use rand;
     use rand::RngExt;
     use rand::rngs::ThreadRng;
+    use std::collections::VecDeque;
 
     #[derive(Clone)]
     // WeightsData is a data structure that stores the temporary data of weights during the construction of table
-    struct WeightsData{
+    struct WeightsData {
         idx: i64,
         weight: f64,
         alias: i64,
@@ -22,24 +22,25 @@ mod random_tools {
     }
 
     // new_wam creates a new WAM data struct
-    pub fn new_wam(
-        weights: Vec<f64>,
-    ) -> WAM {
+    pub fn new_wam(weights: Vec<f64>) -> WAM {
         // Check if the sum is equal to 1.0
         let mut tmp_weights: Vec<f64> = weights.clone();
-        let mut sum: f64 = 0.0;
-        for i in tmp_weights {
-            sum += i;
-        }
-        if sum != 1.0{
-            panic!("The total sum of the weights is not 1.0!")
+        let length: i64 = tmp_weights.len() as i64;
+        if length > 1{
+            let mut sum: f64 = 0.0;
+            for i in tmp_weights {
+                sum += i;
+            }
+            if sum != 1.0 {
+                panic!("The total sum of the weights {} is not 1.0!", sum)
+            }
         }
         // Return WAM
-        return WAM{
+        WAM {
             weights: weights.clone(),
             // The probability of selecting the original weight
-            result: VecDeque::new()
-        }.clone();
+            result: VecDeque::new(),
+        }.clone()
     }
 
     impl WAM {
@@ -48,24 +49,22 @@ mod random_tools {
             let mut new_possibility: Vec<WeightsData> = Vec::new();
             let length = *&self.weights.len() as f64;
             for (idx, num) in (*&self.weights).iter().enumerate() {
-                new_possibility.push(
-                    WeightsData{
-                        idx: idx as i64,
-                        weight: *num*length,
-                        alias: idx as i64,
-                        prob: 1.0,
-                    }
-                );
+                new_possibility.push(WeightsData {
+                    idx: idx as i64,
+                    weight: *num * length,
+                    alias: idx as i64,
+                    prob: 1.0,
+                });
             }
             let mut l: VecDeque<WeightsData> = VecDeque::new();
             let mut g: VecDeque<WeightsData> = VecDeque::new();
             let mut e: VecDeque<WeightsData> = VecDeque::new();
             for i in new_possibility {
-                if i.weight == 1.0{
+                if i.weight == 1.0 {
                     e.push_back(i)
-                }else if i.weight < 1.0 {
+                } else if i.weight < 1.0 {
                     l.push_back(i);
-                }else if i.weight > 1.0 {
+                } else if i.weight > 1.0 {
                     g.push_back(i);
                 }
             }
@@ -73,15 +72,15 @@ mod random_tools {
                 let mut lesser: WeightsData;
                 let mut greater: WeightsData;
                 let mut lesser_diff: f64;
-                if let Some(value) = l.pop_front(){
+                if let Some(value) = l.pop_front() {
                     lesser = value;
                     lesser_diff = 1.0 - lesser.weight
-                }else{
+                } else {
                     panic!("The l is empty but g is not empty");
                 }
-                if let Some(value) = g.pop_front(){
+                if let Some(value) = g.pop_front() {
                     greater = value;
-                }else {
+                } else {
                     panic!("The g is empty but l is not empty");
                 }
                 greater.weight -= lesser_diff;
@@ -91,9 +90,9 @@ mod random_tools {
                 e.push_back(lesser);
                 if greater.weight > 1.0 {
                     g.push_back(greater);
-                }else if greater.weight == 1.0{
+                } else if greater.weight == 1.0 {
                     e.push_back(greater);
-                }else{
+                } else {
                     l.push_back(greater);
                 }
             }
@@ -110,21 +109,20 @@ mod random_tools {
                 e.push_back(ni);
             }
             self.result = e.clone();
-            return;
         }
 
         // sample a random idx from the weights
         pub fn sample(&self) -> i64 {
             let mut rng: ThreadRng = rand::rng();
             let selected_idx: i64 = rng.random_range(0..self.result.len() as i64);
-            if let Some(value) = self.result.get(selected_idx as usize){
+            if let Some(value) = self.result.get(selected_idx as usize) {
                 let internal_select = rng.random::<f64>();
-                if internal_select < value.prob{
-                    return value.idx;
-                }else{
-                    return value.alias;
+                if internal_select < value.prob {
+                    value.idx
+                } else {
+                    value.alias
                 }
-            }else{
+            } else {
                 panic!("The result at position {} is empty", selected_idx);
             }
         }

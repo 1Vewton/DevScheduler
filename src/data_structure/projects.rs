@@ -1,5 +1,6 @@
 // projects module
 mod projects {
+    use crate::utils::rand_tools::random_tools;
 
     #[derive(Clone)]
     // Project stores the data structure describing a project
@@ -24,30 +25,33 @@ mod projects {
         weight: i64,
         description: String,
     ) -> Project {
-        return Project {
+        Project {
             project_name: project_name,
             weight: weight,
             description: description,
-        };
+        }.clone()
     }
 
     impl Project {
         // get_project_name gets the name of this project
         pub fn get_project_name(&self) -> String {
-            return self.project_name.clone();
+            self.project_name.clone()
         }
     }
 
     // Projects stores the data structure describing list of projects
+    #[derive(Clone)]
     pub struct Projects {
         list_of_projects: Vec<Project>,
+        table: random_tools::WAM,
     }
 
     // NewProjects creates a project list
     pub fn new_projects() -> Projects {
-        return Projects {
+        Projects {
             list_of_projects: Vec::new(),
-        };
+            table: random_tools::new_wam(Vec::new()),
+        }.clone()
     }
 
     impl Projects {
@@ -64,14 +68,21 @@ mod projects {
                 let n_weight: f64 = n.weight as f64;
                 result.push(n_weight * sub_weights)
             }
-            return result;
+            result
+        }
+
+        // update_table updates the WAM table
+        fn update_table(&mut self) {
+            let weight: Vec<f64> = self.get_random_weight();
+            self.table = random_tools::new_wam(weight);
+            self.table.construct_table();
         }
 
         // new_project adds new project to the Projects
         // Update table
         pub fn new_project(&mut self, project: Project) {
             &self.list_of_projects.push(project);
-            return;
+            self.update_table();
         }
 
         // delete_project_by_name deletes certain project by name
@@ -83,12 +94,11 @@ mod projects {
                     break;
                 }
             }
-            return;
         }
 
         // get_all_projects get the list of projects
         pub fn get_all_projects(&self) -> Vec<Project> {
-            return self.list_of_projects.clone();
+            self.list_of_projects.clone()
         }
         // get_random_result get a random project from the projects
     }
@@ -118,10 +128,10 @@ mod test {
         }
         if sum != 1.0 {
             panic!(
-                "The calculation of the weights failed due to the total weight not equals to 1.0!"
+                "The calculation of the weights failed due to the total weight {} not equals to 1.0!",
+                sum,
             )
         }
-        return;
     }
 
     #[test]

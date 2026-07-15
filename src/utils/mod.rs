@@ -1,1 +1,1 @@
-mod rand_tools;
+pub mod rand_tools;
