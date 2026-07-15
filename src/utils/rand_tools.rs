@@ -1,6 +1,9 @@
 // random_tools contain tools for random generation related
 mod random_tools {
     use std::collections::VecDeque;
+    use rand;
+    use rand::RngExt;
+    use rand::rngs::ThreadRng;
 
     #[derive(Clone)]
     // WeightsData is a data structure that stores the temporary data of weights during the construction of table
@@ -108,6 +111,22 @@ mod random_tools {
             }
             self.result = e.clone();
             return;
+        }
+
+        // sample a random idx from the weights
+        pub fn sample(&self) -> i64 {
+            let mut rng: ThreadRng = rand::rng();
+            let selected_idx: i64 = rng.random_range(0..self.result.len() as i64);
+            if let Some(value) = self.result.get(selected_idx as usize){
+                let internal_select = rng.random::<f64>();
+                if internal_select < value.prob{
+                    return value.idx;
+                }else{
+                    return value.alias;
+                }
+            }else{
+                panic!("The result at position {} is empty", selected_idx);
+            }
         }
     }
 }
