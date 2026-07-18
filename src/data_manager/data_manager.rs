@@ -4,7 +4,7 @@ pub mod data_manager {
 
     // DataManager defines the manager of the data of the projects
     pub struct DataManager {
-        file_name: String,
+        file_manager: file_manager::FileManager,
         project_list: projects::Projects,
     }
 }

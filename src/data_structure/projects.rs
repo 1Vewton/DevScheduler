@@ -131,6 +131,16 @@ pub mod projects {
                 Some(self.list_of_projects[chosen_idx].clone())
             }
         }
+
+        // to_string turns this struct to the json format string
+        pub fn to_string(&self) -> String {
+            match serde_json::to_string(&self){
+                Ok(result) => result,
+                Err(error) => {
+                    panic!("{}",error);
+                }
+            }
+        }
     }
 }
 
@@ -212,5 +222,17 @@ mod test {
         } else {
             panic!("The calculation of the results failed!");
         }
+    }
+
+    #[test]
+    // Test to_string
+    fn test_to_string() {
+        let project1: projects::Project = projects::create_project(String::from("1"), 2);
+        let project2: projects::Project =
+            projects::create_project_with_description(String::from("abc"), 3, String::from("aaa"));
+        let mut project_list: projects::Projects = projects::new_projects("abc".to_string());
+        project_list.new_project(project1);
+        project_list.new_project(project2);
+        project_list.to_string();
     }
 }

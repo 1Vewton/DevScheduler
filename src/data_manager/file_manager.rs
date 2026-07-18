@@ -7,8 +7,15 @@ pub mod file_manager {
         path_str: String,
     }
 
+    // new_file_manager creates a file manager
+    pub fn new_file_manager(path_str: String) -> FileManager{
+        FileManager{
+            path_str: path_str,
+        }
+    }
+
     impl FileManager {
-        // Create file
+        // create_file creates the file
         pub fn create_file(&self){
             println!("Creating file: {}", self.path_str);
             let path = Path::new(&self.path_str);
