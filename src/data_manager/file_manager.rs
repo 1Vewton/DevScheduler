@@ -1,6 +1,7 @@
 pub mod file_manager {
     use std::path::Path;
     use std::fs::File;
+    use std::fs;
 
     // FileManager manages the file
     pub struct FileManager{
@@ -26,6 +27,55 @@ pub mod file_manager {
                     Err(e) => panic!("File creation failed due to{}", e)
                 }
             }
+        }
+
+        // delete_file deletes the file
+        pub fn delete_file(&self){
+            println!("Deleting file: {}", self.path_str);
+            let path = Path::new(&self.path_str);
+            if path.exists(){
+                match fs::remove_file(path){
+                    Ok(_) => println!("Successfully deleted file"),
+                    Err(e) => panic!("File delete failed due to{}", e)
+                }
+            }else{
+                panic!("The file does not exist");
+            }
+        }
+
+        // read_file_to_string reads the file
+        pub fn read_file_to_string(&self) -> String{
+            println!("Reading file {}...", self.path_str);
+            let path = Path::new(&self.path_str);
+            if path.exists(){
+                match fs::read_to_string(path){
+                    Ok(result) => result,
+                    Err(e) => panic!("File delete failed due to{}", e)
+                }
+            }else{
+                panic!("The file does not exist");
+            }
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::path::Path;
+    use defer_rs::defer;
+
+    #[test]
+    // Test create_file
+    fn test_create_file(){
+        let test_fm = file_manager::new_file_manager("test.json".to_string());
+        test_fm.create_file();
+        defer!({
+            test_fm.delete_file();
+        });
+        let path = Path::new("test.json");
+        if !path.exists() {
+            panic!("File does not exist, creation failed");
         }
     }
 }
