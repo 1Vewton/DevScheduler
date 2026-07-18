@@ -94,6 +94,7 @@ pub mod projects {
                     break;
                 }
             }
+            self.update_table()
         }
 
         // get_all_projects get the list of projects
@@ -172,9 +173,23 @@ mod test {
         let mut project_list: projects::Projects = projects::new_projects();
         project_list.new_project(project1);
         project_list.new_project(project2);
+        let mut passed = false;
         if let Some(result) = project_list.get_random_result() {
-
-        }else{
+            let list = project_list.get_all_projects();
+            for i in 0..list.len() {
+                if let Some(value) = list.get(i) {
+                    if value.get_project_name() == result.get_project_name() {
+                        passed = true;
+                        break
+                    }
+                }else{
+                    panic!("There is a null inside the project list")
+                }
+            }
+            if !passed {
+                panic!("The selected project does not exist!");
+            }
+        } else {
             panic!("The calculation of the results failed!");
         }
     }
