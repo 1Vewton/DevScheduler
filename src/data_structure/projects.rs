@@ -56,7 +56,8 @@ pub mod projects {
 
     impl Projects {
         // get_random_weight gets the random weight of each project
-        pub fn get_random_weight(&self) -> Vec<f64> {
+        pub fn get_random_weight(&mut self) -> Vec<f64> {
+            self.manage_table();
             let mut all_weights: i64 = 0;
             for n in &self.list_of_projects {
                 all_weights += n.weight
@@ -71,8 +72,21 @@ pub mod projects {
             result
         }
 
+        // manage_table removes all null result
+        fn manage_table(&mut self){
+            for i in 0..self.list_of_projects.len(){
+                let processed_i = self.list_of_projects.len() - 1 - i;
+                if let Some(value) = self.list_of_projects.get(processed_i){
+
+                }else{
+                    self.list_of_projects.remove(processed_i);
+                }
+            }
+        }
+
         // update_table updates the WAM table
         fn update_table(&mut self) {
+            self.manage_table();
             let weight: Vec<f64> = self.get_random_weight();
             self.table = random_tools::new_wam(weight);
             self.table.construct_table();
@@ -98,12 +112,14 @@ pub mod projects {
         }
 
         // get_all_projects get the list of projects
-        pub fn get_all_projects(&self) -> Vec<Project> {
+        pub fn get_all_projects(&mut self) -> Vec<Project> {
+            self.manage_table();
             self.list_of_projects.clone()
         }
 
         // get_random_result get a random project from the projects
-        pub fn get_random_result(&self) -> Option<Project> {
+        pub fn get_random_result(&mut self) -> Option<Project> {
+            self.manage_table();
             let chosen_idx: usize = self.table.sample() as usize;
             if chosen_idx >= self.list_of_projects.len(){
                 None
