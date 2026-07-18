@@ -4,8 +4,9 @@ pub mod random_tools {
     use rand::RngExt;
     use rand::rngs::ThreadRng;
     use std::collections::VecDeque;
+    use serde::{Deserialize, Serialize};
 
-    #[derive(Clone)]
+    #[derive(Clone, Serialize, Deserialize)]
     // WeightsData is a data structure that stores the temporary data of weights during the construction of table
     struct WeightsData {
         idx: i64,
@@ -14,7 +15,7 @@ pub mod random_tools {
         prob: f64,
     }
 
-    #[derive(Clone)]
+    #[derive(Clone, Serialize, Deserialize)]
     // WAM is a data structure that can select random idx weightedly from a given list
     pub struct WAM {
         weights: Vec<f64>,

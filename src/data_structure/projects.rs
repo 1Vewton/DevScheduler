@@ -1,8 +1,10 @@
 // projects module
 pub mod projects {
     use crate::utils::rand_tools::random_tools;
+    use serde::{Serialize, Deserialize};
+    use serde_json;
 
-    #[derive(Clone)]
+    #[derive(Clone, Serialize, Deserialize)]
     // Project stores the data structure describing a project
     pub struct Project {
         project_name: String,
@@ -40,17 +42,19 @@ pub mod projects {
     }
 
     // Projects stores the data structure describing list of projects
-    #[derive(Clone)]
+    #[derive(Clone, Serialize, Deserialize)]
     pub struct Projects {
         list_of_projects: Vec<Project>,
         table: random_tools::WAM,
+        user_name: String,
     }
 
     // NewProjects creates a project list
-    pub fn new_projects() -> Projects {
+    pub fn new_projects(user_name: String) -> Projects {
         Projects {
             list_of_projects: Vec::new(),
             table: random_tools::new_wam(Vec::new()),
+            user_name: user_name,
         }.clone()
     }
 
@@ -141,7 +145,7 @@ mod test {
         let project1: projects::Project = projects::create_project(String::from("1"), 2);
         let project2: projects::Project =
             projects::create_project_with_description(String::from("1"), 1, String::from("aaa"));
-        let mut project_list: projects::Projects = projects::new_projects();
+        let mut project_list: projects::Projects = projects::new_projects("abc".to_string());
         project_list.new_project(project1);
         project_list.new_project(project2);
         let result: Vec<f64> = project_list.get_random_weight();
@@ -166,7 +170,7 @@ mod test {
         let project1: projects::Project = projects::create_project(String::from("1"), 2);
         let project2: projects::Project =
             projects::create_project_with_description(String::from("abc"), 3, String::from("aaa"));
-        let mut project_list: projects::Projects = projects::new_projects();
+        let mut project_list: projects::Projects = projects::new_projects("abc".to_string());
         project_list.new_project(project1);
         project_list.new_project(project2);
         project_list.delete_project_by_name(String::from("abc"));
@@ -186,7 +190,7 @@ mod test {
         let project1: projects::Project = projects::create_project(String::from("1"), 2);
         let project2: projects::Project =
             projects::create_project_with_description(String::from("abc"), 3, String::from("aaa"));
-        let mut project_list: projects::Projects = projects::new_projects();
+        let mut project_list: projects::Projects = projects::new_projects("abc".to_string());
         project_list.new_project(project1);
         project_list.new_project(project2);
         let mut passed = false;
