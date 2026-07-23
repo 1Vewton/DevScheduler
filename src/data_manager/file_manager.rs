@@ -91,6 +91,24 @@ pub mod file_manager {
             }
         }
 
+        // read_file_to_project_today reads the file to Projects struct
+        pub fn read_file_to_project_today(&self) -> projects::ProjectToday {
+            println!("Reading file {}", self.path_str);
+            let path = Path::new(&self.path_str);
+            if path.exists(){
+                match fs::read_to_string(path){
+                    Ok(result) => {
+                        let result: projects::ProjectToday = serde_json::from_str(&result)
+                            .expect("Could not deserialize projects from file");
+                        result
+                    },
+                    Err(e) => panic!("File read failed due to{}", e)
+                }
+            }else{
+                panic!("The file {} does not exist", self.path_str);
+            }
+        }
+
         // check_file_exist checks whether this file exists
         pub fn check_file_exist(&self) -> bool {
             let path = Path::new(&self.path_str);

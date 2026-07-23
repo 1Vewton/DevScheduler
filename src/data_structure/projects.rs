@@ -15,11 +15,11 @@ pub mod projects {
 
     // create_project creates a project
     pub fn create_project(project_name: String, weight: i64) -> Project {
-        return Project {
+        Project {
             project_name: project_name,
             weight: weight,
             description: String::from("N/A"),
-        };
+        }
     }
 
     // create_project_with_description creates a project with description
@@ -100,7 +100,7 @@ pub mod projects {
         // new_project adds new project to the Projects
         // Update table
         pub fn new_project(&mut self, project: Project) {
-            &self.list_of_projects.push(project);
+            self.list_of_projects.push(project);
             self.update_table();
         }
 
