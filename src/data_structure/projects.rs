@@ -235,6 +235,11 @@ pub mod projects {
         pub fn get_project(&self) -> Project {
             self.project.clone()
         }
+
+        // get_date gets the date
+        pub fn get_date(&self) -> String {
+            self.date.clone()
+        }
     }
 }
 

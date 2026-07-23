@@ -32,15 +32,20 @@ fn main() {
         let mut project_today: projects::ProjectToday;
         if !project_today_manager.check_file_exist() {
             project_today_manager.create_file();
-            project_today = projects::new_project_today(projects);
+            project_today = projects::new_project_today(projects.clone());
             project_today_manager.write_string_to_file(project_today.to_string());
         } else {
             project_today = project_today_manager.read_file_to_project_today();
             if !project_today.is_valid() {
-                project_today = projects::new_project_today(projects);
+                project_today = projects::new_project_today(projects.clone());
                 project_today_manager.write_string_to_file(project_today.to_string());
             }
         }
+        println!();
+        println!("Hello {}, it is {}. Today's project is",
+                 projects.get_user_name(),
+                 project_today.get_date(),
+        );
         project_today.get_project().show_project_info()
     }
     // Operation here
