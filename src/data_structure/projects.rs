@@ -1,6 +1,7 @@
 // projects module
 pub mod projects {
     use crate::utils::rand_tools::random_tools;
+    use crate::utils::date::date;
     use serde::{Serialize, Deserialize};
     use serde_json;
 
@@ -133,6 +134,48 @@ pub mod projects {
         }
 
         // to_string turns this struct to the json format string
+        pub fn to_string(&mut self) -> String {
+            self.manage_table();
+            match serde_json::to_string(&self){
+                Ok(result) => result,
+                Err(error) => {
+                    panic!("{}",error);
+                }
+            }
+        }
+    }
+
+    #[derive(Clone, Serialize, Deserialize)]
+    // ProjectToday defines the random project selected for today
+    pub struct ProjectToday{
+        pub date: String,
+        project: Project,
+    }
+
+    // new_project_today creates a new project
+    pub fn new_project_today(project: Projects) -> ProjectToday {
+        let mut new_list = project.clone();
+        if let Some(selected_project) = new_list.get_random_result() {
+            ProjectToday{
+                date: date::get_date(),
+                project:selected_project,
+            }
+        }else{
+            panic!("Error getting random result");
+        }
+    }
+
+    impl ProjectToday {
+        // is_valid see if this project today is valid
+        pub fn is_valid(&self) -> bool {
+            if self.date == date::get_date() {
+                true
+            }else {
+                false
+            }
+        }
+
+        // to_string converts it to json-formatted string
         pub fn to_string(&self) -> String {
             match serde_json::to_string(&self){
                 Ok(result) => result,
@@ -234,5 +277,19 @@ mod test {
         project_list.new_project(project1);
         project_list.new_project(project2);
         project_list.to_string();
+    }
+
+    #[test]
+    // Test project for today
+    fn test_project_today() {
+        let project1: projects::Project = projects::create_project(String::from("1"), 2);
+        let project2: projects::Project =
+            projects::create_project_with_description(String::from("abc"), 3, String::from("aaa"));
+        let mut project_list: projects::Projects = projects::new_projects("abc".to_string());
+        project_list.new_project(project1);
+        project_list.new_project(project2);
+        let project_today: projects::ProjectToday = projects::new_project_today(project_list);
+        assert_eq!(project_today.is_valid(), true);
+        project_today.to_string();
     }
 }
