@@ -2,6 +2,8 @@ pub mod file_manager {
     use std::path::Path;
     use std::fs::File;
     use std::fs;
+    use serde_json;
+    use crate::data_structure::projects::projects;
 
     // FileManager manages the file
     pub struct FileManager{
@@ -68,6 +70,24 @@ pub mod file_manager {
                 }
             }else{
                 panic!("The file does not exist");
+            }
+        }
+
+        // read_file_to_projects reads the file to Projects struct
+        pub fn read_file_to_projects(&self) -> projects::Projects {
+            println!("Reading file {}", self.path_str);
+            let path = Path::new(&self.path_str);
+            if path.exists(){
+                match fs::read_to_string(path){
+                    Ok(result) => {
+                        let result: projects::Projects = serde_json::from_str(&result)
+                            .expect("Could not deserialize projects from file");
+                        result
+                    },
+                    Err(e) => panic!("File read failed due to{}", e)
+                }
+            }else{
+                panic!("The file {} does not exist", self.path_str);
             }
         }
     }
