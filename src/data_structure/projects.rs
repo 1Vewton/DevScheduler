@@ -40,6 +40,11 @@ pub mod projects {
         pub fn get_project_name(&self) -> String {
             self.project_name.clone()
         }
+
+        // get_project_description gets the description of the project
+        pub fn get_project_description(&self) -> String {
+            self.description.clone()
+        }
     }
 
     // Projects stores the data structure describing list of projects
