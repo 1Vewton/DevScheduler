@@ -32,7 +32,7 @@ pub mod random_tools {
             for i in tmp_weights {
                 sum += i;
             }
-            if sum != 1.0 {
+            if sum.round() != 1.0 {
                 panic!("The total sum of the weights {} is not 1.0!", sum)
             }
         }

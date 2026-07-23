@@ -9,9 +9,9 @@ pub mod question_interface {
     ) -> bool {
         let choice_tip: String;
         if default_choice {
-            choice_tip = String::from("Y/n");
+            choice_tip = String::from("y/N");
         }else{
-            choice_tip = String::from("n/Y");
+            choice_tip = String::from("N/y");
         }
         println!("{} ({})", tip, choice_tip);
         let mut response = String::new();

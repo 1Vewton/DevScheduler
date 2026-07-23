@@ -2,6 +2,7 @@
 pub mod projects {
     use crate::utils::rand_tools::random_tools;
     use crate::utils::date::date;
+    use ansi_term::Colour;
     use serde::{Serialize, Deserialize};
     use serde_json;
 
@@ -44,6 +45,41 @@ pub mod projects {
         // get_project_description gets the description of the project
         pub fn get_project_description(&self) -> String {
             self.description.clone()
+        }
+
+        // get_project_weight gets the weight of the project
+        pub fn get_project_weight(&self) -> i64 {
+            self.weight
+        }
+
+        // show_project_info shows the info of the project
+        pub fn show_project_info(&self) {
+            println!();
+            println!(
+                "{}",
+                Colour::Red.bold().paint(
+                    format!(
+                        "Project name: {}", self.get_project_name()
+                    )
+                )
+            );
+            println!(
+                "{}",
+                Colour::Green.italic().paint(
+                    format!(
+                        "Description: {}", self.get_project_description()
+                    )
+                )
+            );
+            println!(
+                "{}",
+                Colour::Blue.italic().paint(
+                    format!(
+                        "Weight: {}", self.get_project_weight()
+                    )
+                )
+            );
+            println!();
         }
     }
 
@@ -193,6 +229,11 @@ pub mod projects {
                     panic!("{}",error);
                 }
             }
+        }
+
+        // get_project gets the project
+        pub fn get_project(&self) -> Project {
+            self.project.clone()
         }
     }
 }
