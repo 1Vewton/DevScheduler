@@ -143,6 +143,11 @@ pub mod projects {
                 }
             }
         }
+
+        // get_use_name gets the user name
+        pub fn get_user_name(&self) -> String {
+            self.user_name.clone()
+        }
     }
 
     #[derive(Clone, Serialize, Deserialize)]

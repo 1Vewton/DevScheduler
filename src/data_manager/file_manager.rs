@@ -90,6 +90,12 @@ pub mod file_manager {
                 panic!("The file {} does not exist", self.path_str);
             }
         }
+
+        // check_file_exist checks whether this file exists
+        pub fn check_file_exist(&self) -> bool {
+            let path = Path::new(&self.path_str);
+            path.exists()
+        }
     }
 }
 
