@@ -56,6 +56,20 @@ pub mod file_manager {
                 panic!("The file does not exist");
             }
         }
+
+        // write_string_to_file writes a string to a file
+        pub fn write_string_to_file(&self, content: String){
+            println!("Writing to file {}", self.path_str);
+            let path = Path::new(&self.path_str);
+            if path.exists(){
+                match fs::write(path, content.as_bytes()){
+                    Ok(result) => {},
+                    Err(e) => panic!("File delete failed due to{}", e)
+                }
+            }else{
+                panic!("The file does not exist");
+            }
+        }
     }
 }
 
@@ -77,5 +91,18 @@ mod tests {
         if !path.exists() {
             panic!("File does not exist, creation failed");
         }
+    }
+
+    #[test]
+    // Test write_file and read_file
+    fn test_write_read_file(){
+        let test_fm = file_manager::new_file_manager("test.txt".to_string());
+        test_fm.create_file();
+        defer!({
+            test_fm.delete_file();
+        });
+        test_fm.write_string_to_file("hello world".to_string());
+        let content = test_fm.read_file_to_string();
+        assert_eq!("hello world", content);
     }
 }
